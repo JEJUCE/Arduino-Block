@@ -51,7 +51,7 @@ def guess_port_name():
     """Attempt to guess a port name that we might find an Arduino on."""
     portname = None
     if platform.system() == "Windows":
-        import _winreg as winreg
+        import winreg as winreg
         key = winreg.OpenKey(winreg.HKEY_LOCAL_MACHINE, "HARDWARE\\DEVICEMAP\\SERIALCOMM")
         # We'll guess it's the last COM port.
         for i in itertools.count():
@@ -103,16 +103,16 @@ class Handler(http.server.SimpleHTTPRequestHandler):
 
         options, args = parser.parse_args()
 
-        length = int(self.headers.getheader('content-length'))
+        length = int(self.headers.get('content-length'))
         if length:
             text = self.rfile.read(length)
                         
-            print ("sketch to upload: " + text)
+            #print("sketch to upload: " + text)
 
             dirname = tempfile.mkdtemp()
             sketchname = os.path.join(dirname, os.path.basename(dirname)) + ".ino"
             f = open(sketchname, "wb")
-            f.write(text + "\n")
+            f.write(text + b"\n")
             f.close()
 
             print ("created sketch at %s" % (sketchname,))
@@ -135,7 +135,7 @@ class Handler(http.server.SimpleHTTPRequestHandler):
             rc = subprocess.call(compile_args)
 
             if not rc == 0:
-                print ("arduino --upload returned " + rc)                         
+                #print ("arduino --upload returned " + rc)                         
                 self.send_response(400)
             else:
                 self.send_response(200)
